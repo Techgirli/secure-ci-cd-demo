@@ -54,6 +54,12 @@ jobs:
           vuln-type: 'library' # Skips base OS noise and focuses purely on npm packages
 
       # 5. Terraform Infrastructure Validation
+      # Setup Terraform CLI on the runner
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
       - name: Terraform Init & Plan
         working-directory: ./terraform
         run: |
