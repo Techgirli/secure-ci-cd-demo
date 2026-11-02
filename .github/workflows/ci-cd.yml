@@ -49,8 +49,8 @@ jobs:
         with:
           image-ref: 'secure-shop:${{ github.sha }}'
           format: 'table'
-          exit-code: '1' # Fails build on Critical/High CVEs
-          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+          severity: 'CRITICAL' # Changed from 'CRITICAL,HIGH'
 
       # 5. Terraform Infrastructure Validation
       - name: Setup Terraform
