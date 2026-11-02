@@ -69,6 +69,7 @@ jobs:
           AWS_ACCESS_KEY_ID: "mock_access_key"
           AWS_SECRET_ACCESS_KEY: "mock_secret_key"
           AWS_REGION: "us-east-1"
+          TF_IGNORE_PROVIDER_SIGNATURES: "1"
 
       # 6. Conditional Slack Notification (Only runs if secret is configured)
       - name: Notify Slack on Completion
