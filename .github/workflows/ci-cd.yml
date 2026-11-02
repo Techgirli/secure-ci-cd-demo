@@ -50,7 +50,8 @@ jobs:
           image-ref: 'secure-shop:${{ github.sha }}'
           format: 'table'
           exit-code: '1'
-          severity: 'CRITICAL' # Changed from 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
+          scanners: 'vuln,secret'
 
       # 5. Terraform Infrastructure Validation
       - name: Setup Terraform
