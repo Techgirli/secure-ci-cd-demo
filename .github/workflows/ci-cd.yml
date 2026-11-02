@@ -63,7 +63,7 @@ jobs:
       - name: Terraform Init & Plan
         working-directory: ./terraform
         run: |
-          terraform init -verify-plugins=false
+          terraform init
           terraform plan -no-color
         env:
           AWS_ACCESS_KEY_ID: "mock_access_key"
