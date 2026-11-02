@@ -2,8 +2,8 @@ terraform {
   required_version = ">= 1.0.0"
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0.0"
+      source  = "opentofu/aws"
+      version = "~> 5.0"
     }
   }
 }
@@ -19,8 +19,4 @@ resource "aws_ecr_repository" "app_repo" {
   image_scanning_configuration {
     scan_on_push = true
   }
-}
-
-output "repository_url" {
-  value = aws_ecr_repository.app_repo.repository_url
 }
