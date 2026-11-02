@@ -54,14 +54,15 @@ jobs:
           vuln-type: 'library' # Skips base OS noise and focuses purely on npm packages
 
       # 5. Terraform Infrastructure Validation
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
       - name: Terraform Init & Plan
         working-directory: ./terraform
         run: |
           terraform init
           terraform plan -no-color
+        env:
+          AWS_ACCESS_KEY_ID: "mock_access_key"
+          AWS_SECRET_ACCESS_KEY: "mock_secret_key"
+          AWS_REGION: "us-east-1"
 
       # 6. Conditional Slack Notification (Only runs if secret is configured)
       - name: Notify Slack on Completion
