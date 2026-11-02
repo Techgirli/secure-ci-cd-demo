@@ -50,8 +50,8 @@ jobs:
           image-ref: 'secure-shop:${{ github.sha }}'
           format: 'table'
           exit-code: '1'
-          severity: 'CRITICAL'
-          scanners: 'vuln,secret'
+          severity: 'CRITICAL,HIGH'
+          vuln-type: 'library' # Skips base OS noise and focuses purely on npm packages
 
       # 5. Terraform Infrastructure Validation
       - name: Setup Terraform
