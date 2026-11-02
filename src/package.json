@@ -1,0 +1,13 @@
+{
+  "name": "secure-shop-api",
+  "version": "1.0.0",
+  "description": "Demo app for Secure CI/CD pipeline",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "4.17.1",
+    "lodash": "4.17.15" 
+  }
+}

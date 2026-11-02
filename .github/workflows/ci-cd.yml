@@ -1,0 +1,79 @@
+name: Secure CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  security-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: src/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: ./src
+        run: npm install
+
+      # 1. Dependency & Vulnerability Audit
+      - name: Run Snyk / npm Audit
+        working-directory: ./src
+        run: npm audit --audit-level=high || echo "Vulnerabilities found!"
+
+      # 2. Build Docker Image
+      - name: Build Docker Image
+        run: docker build -t secure-shop:${{ github.sha }} .
+
+      # 3. Trivy Container Image Security Scan (The Gatekeeper)
+      - name: Run Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'secure-shop:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1' # Fails the pipeline if CRITICAL/HIGH CVEs are found
+          severity: 'CRITICAL,HIGH'
+
+      # 4. Terraform Infrastructure Validation
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init & Plan
+        working-directory: ./terraform
+        run: |
+          terraform init
+          terraform plan -no-color
+
+      # 5. Deployment Placeholder / Notification
+      - name: Notify Status on Success/Failure
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: "CI/CD Pipeline finished for commit ${{ github.sha }}"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+# 1.5. Static Application Security Testing (SAST) with Semgrep
+      - name: Run Semgrep SAST
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+          generate-sarif: "true"
+      
+      # Optional: Upload results to GitHub Security Tab
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
